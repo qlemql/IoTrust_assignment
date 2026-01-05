@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { BannerCarousel } from './components/banner';
 import { FavoritesList } from './components/favorites';
-import { ServiceList } from './components/services';
+import { ServiceList, ServiceDetailSheet } from './components/services';
 import { useBanners } from './hooks/useBanners';
 import type { Service } from './types';
 
@@ -33,11 +33,10 @@ const App = () => {
         </section>
       </main>
 
-      {selectedService && (
-        <div className="hidden">
-          <button onClick={handleCloseDetail}>Close</button>
-        </div>
-      )}
+      <ServiceDetailSheet
+        service={selectedService}
+        onClose={handleCloseDetail}
+      />
     </div>
   );
 };

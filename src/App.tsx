@@ -18,9 +18,9 @@ const App = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <main className="pb-20">
-        <section className="pt-4">
+    <div className="min-h-screen overflow-y-auto bg-gray-50">
+      <main className="flex flex-col pb-6">
+        <section>
           <BannerCarousel banners={banners} isLoading={isBannersLoading} />
         </section>
 
@@ -28,7 +28,7 @@ const App = () => {
           <FavoritesList />
         </section>
 
-        <section className="mt-6">
+        <section className="mt-6 min-h-[60vh]">
           <ServiceList onServiceSelect={handleServiceSelect} />
         </section>
       </main>

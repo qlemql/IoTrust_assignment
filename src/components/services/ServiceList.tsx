@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect, useCallback } from 'react';
+import { useState, useRef, useCallback } from 'react';
 import { useVirtualizer } from '@tanstack/react-virtual';
 import { useConfigStore } from '../../stores/configStore';
 import { useInfiniteServices, flattenServices } from '../../hooks/useInfiniteServices';
@@ -39,7 +39,6 @@ export const ServiceList = ({ onServiceSelect }: Props) => {
 
   const [searchQuery, setSearchQuery] = useState('');
   const parentRef = useRef<HTMLDivElement>(null);
-  const loadMoreRef = useRef<HTMLDivElement>(null);
 
   const {
     data,
@@ -58,30 +57,19 @@ export const ServiceList = ({ onServiceSelect }: Props) => {
     searchQuery
   );
 
-  const handleObserver = useCallback(
-    (entries: IntersectionObserverEntry[]) => {
-      const [entry] = entries;
-      if (entry.isIntersecting && hasNextPage && !isFetchingNextPage) {
-        fetchNextPage();
-      }
-    },
-    [fetchNextPage, hasNextPage, isFetchingNextPage]
-  );
-
-  useEffect(() => {
-    const element = loadMoreRef.current;
+  const handleScroll = useCallback(() => {
+    const element = parentRef.current;
     if (!element) return;
 
-    const observer = new IntersectionObserver(handleObserver, {
-      root: parentRef.current,
-      rootMargin: '100px',
-      threshold: 0,
-    });
+    const { scrollTop, scrollHeight, clientHeight } = element;
+    const scrollThreshold = 200;
 
-    observer.observe(element);
-
-    return () => observer.disconnect();
-  }, [handleObserver]);
+    if (scrollHeight - scrollTop - clientHeight < scrollThreshold) {
+      if (hasNextPage && !isFetchingNextPage) {
+        fetchNextPage();
+      }
+    }
+  }, [fetchNextPage, hasNextPage, isFetchingNextPage]);
 
   const virtualizer = useVirtualizer({
     count: filteredServices.length,
@@ -98,7 +86,7 @@ export const ServiceList = ({ onServiceSelect }: Props) => {
         <ServiceSearch value={searchQuery} onChange={setSearchQuery} />
       </div>
 
-      <h2 className="text-base font-semibold text-gray-900 mb-3">
+      <h2 className="text-base font-semibold text-gray-900 pb-3 border-b border-gray-200">
         {TEXTS.title[language]}
       </h2>
 
@@ -115,7 +103,8 @@ export const ServiceList = ({ onServiceSelect }: Props) => {
       ) : (
         <div
           ref={parentRef}
-          className="h-[calc(100vh-380px)] overflow-auto bg-white rounded-lg"
+          className="h-[60vh] overflow-auto overflow-x-hidden bg-white rounded-lg"
+          onScroll={handleScroll}
         >
           <div
             className="relative w-full"
@@ -137,8 +126,6 @@ export const ServiceList = ({ onServiceSelect }: Props) => {
               );
             })}
           </div>
-
-          <div ref={loadMoreRef} className="h-1" />
 
           {isFetchingNextPage && (
             <div className="py-4 text-center">

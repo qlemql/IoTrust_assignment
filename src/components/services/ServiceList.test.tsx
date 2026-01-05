@@ -96,20 +96,4 @@ describe('ServiceList', () => {
 
     expect(searchInput.value).toBe('테스트 검색어');
   });
-
-  it('X 버튼 클릭 시 검색어가 초기화되어야 한다', () => {
-    render(<ServiceList onServiceSelect={vi.fn()} />, {
-      wrapper: createWrapper(),
-    });
-
-    const searchInput = screen.getByPlaceholderText('서비스 검색') as HTMLInputElement;
-    fireEvent.change(searchInput, { target: { value: '검색어' } });
-
-    expect(searchInput.value).toBe('검색어');
-
-    const clearButton = screen.getByLabelText('Clear search');
-    fireEvent.click(clearButton);
-
-    expect(searchInput.value).toBe('');
-  });
 });

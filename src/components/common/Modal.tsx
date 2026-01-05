@@ -85,13 +85,8 @@ export const Modal = ({ isOpen, onClose, children }: Props) => {
       <div
         onClick={isClosing ? undefined : handleClose}
         aria-hidden="true"
+        className="fixed inset-0 bg-black/50"
         style={{
-          position: 'fixed',
-          top: 0,
-          left: 0,
-          right: 0,
-          bottom: 0,
-          backgroundColor: 'rgba(0, 0, 0, 0.5)',
           opacity: isClosing ? 0 : 1,
           transition: 'opacity 200ms',
         }}
@@ -112,13 +107,8 @@ export const Modal = ({ isOpen, onClose, children }: Props) => {
         }}
       >
         <div
+          className="bg-white rounded-2xl w-full max-w-sm overflow-hidden pointer-events-auto"
           style={{
-            backgroundColor: 'white',
-            borderRadius: '16px',
-            width: '100%',
-            maxWidth: '384px',
-            overflow: 'hidden',
-            pointerEvents: 'auto',
             opacity: isClosing ? 0 : 1,
             transform: isClosing ? 'scale(0.95)' : 'scale(1)',
             transition: 'opacity 200ms, transform 200ms',

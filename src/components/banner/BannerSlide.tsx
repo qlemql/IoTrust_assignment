@@ -23,7 +23,7 @@ export const BannerSlide = ({ banner, language, onCtaClick, indicator }: Props) 
 
   const isDarkBackground = DARK_BACKGROUND_BANNERS.includes(banner.id);
   const hideCta = HIDE_CTA_BANNERS.includes(banner.id);
-  const textColor = isDarkBackground ? '#ffffff' : '#111827';
+  const textColorClass = isDarkBackground ? 'text-white' : 'text-gray-900';
 
   const handleClick = () => {
     onCtaClick(banner.ctaUrl[language]);
@@ -59,8 +59,7 @@ export const BannerSlide = ({ banner, language, onCtaClick, indicator }: Props) 
         />
       )}
       <div
-        className="absolute bottom-4 left-0 right-0 p-4"
-        style={{ color: textColor }}
+        className={`absolute bottom-4 left-0 right-0 p-4 ${textColorClass}`}
       >
         <p className="text-sm mb-3 whitespace-pre-line">
           {banner.description[language]}

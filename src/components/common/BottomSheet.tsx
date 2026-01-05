@@ -166,13 +166,8 @@ export const BottomSheet = ({ isOpen, onClose, children }: Props) => {
       <div
         onClick={isClosing ? undefined : handleClose}
         aria-hidden="true"
+        className="fixed inset-0 bg-black/50"
         style={{
-          position: 'fixed',
-          top: 0,
-          left: 0,
-          right: 0,
-          bottom: 0,
-          backgroundColor: 'rgba(0, 0, 0, 0.5)',
           opacity: isClosing ? 0 : Math.max(0, 1 - dragY / 300),
           transition: isDragging ? 'none' : 'opacity 300ms',
         }}
@@ -180,40 +175,20 @@ export const BottomSheet = ({ isOpen, onClose, children }: Props) => {
       {/* Sheet */}
       <div
         ref={sheetRef}
+        className="fixed bottom-0 left-0 right-0 bg-white rounded-t-2xl min-h-[60vh] max-h-[90vh]"
         style={{
-          position: 'fixed',
-          bottom: 0,
-          left: 0,
-          right: 0,
-          backgroundColor: 'white',
-          borderTopLeftRadius: '16px',
-          borderTopRightRadius: '16px',
-          minHeight: '60vh',
-          maxHeight: '90vh',
           transform: sheetTransform,
           transition: isDragging ? 'none' : 'transform 300ms',
         }}
       >
-        <div style={{ overflowY: 'auto', maxHeight: '90vh' }}>
+        <div className="overflow-y-auto max-h-[90vh]">
           {/* Handle - 드래그 영역 */}
           <div
             onTouchStart={handleTouchStart}
             onTouchMove={handleTouchMove}
             onTouchEnd={handleTouchEnd}
             onMouseDown={handleMouseDown}
-            style={{
-              position: 'sticky',
-              top: 0,
-              backgroundColor: 'white',
-              paddingTop: '12px',
-              paddingBottom: '8px',
-              display: 'flex',
-              justifyContent: 'center',
-              borderTopLeftRadius: '16px',
-              borderTopRightRadius: '16px',
-              cursor: 'grab',
-              touchAction: 'none',
-            }}
+            className="sticky top-0 bg-white pt-3 pb-2 flex justify-center rounded-t-2xl cursor-grab touch-none"
           >
             <div className="w-10 h-1 bg-gray-300 rounded-full" />
           </div>

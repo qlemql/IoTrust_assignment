@@ -44,10 +44,6 @@ export const BannerCarousel = ({ banners, isLoading = false }: Props) => {
     window.open(url, '_blank', 'noopener,noreferrer');
   };
 
-  const goToSlide = (index: number) => {
-    setCurrentIndex(index);
-  };
-
   if (isLoading) {
     return (
       <div className="px-4">
@@ -61,7 +57,7 @@ export const BannerCarousel = ({ banners, isLoading = false }: Props) => {
   }
 
   return (
-    <div className="px-4">
+    <div>
       <div
         className="relative overflow-hidden"
         onTouchStart={handleTouchStart}
@@ -72,36 +68,19 @@ export const BannerCarousel = ({ banners, isLoading = false }: Props) => {
           className="flex transition-transform duration-300 ease-out"
           style={{ transform: `translateX(-${currentIndex * 100}%)` }}
         >
-          {banners.map((banner) => (
-            <div key={banner.id} className="w-full flex-shrink-0">
+          {banners.map((banner, index) => (
+            <div key={banner.id} className="w-full min-w-full flex-shrink-0">
               <BannerSlide
                 banner={banner}
                 language={language}
                 onCtaClick={handleCtaClick}
+                indicator={index === currentIndex ? `${currentIndex + 1}/${banners.length}` : undefined}
               />
             </div>
           ))}
         </div>
-
-        <div className="absolute bottom-2 right-4 bg-black/50 text-white text-xs px-2 py-1 rounded-full">
-          {currentIndex + 1}/{banners.length}
-        </div>
       </div>
 
-      {banners.length > 1 && (
-        <div className="flex justify-center gap-2 mt-3">
-          {banners.map((_, index) => (
-            <button
-              key={index}
-              className={`w-2 h-2 rounded-full transition-colors ${
-                index === currentIndex ? 'bg-green-500' : 'bg-gray-300'
-              }`}
-              onClick={() => goToSlide(index)}
-              aria-label={`Go to slide ${index + 1}`}
-            />
-          ))}
-        </div>
-      )}
     </div>
   );
 };

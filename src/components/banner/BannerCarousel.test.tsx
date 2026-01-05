@@ -7,7 +7,6 @@ const mockBanners: Banner[] = [
   {
     id: 'banner-1',
     imageUrl: { ko: '/banner1.png', en: '/banner1-en.png' },
-    title: { ko: '배너 제목 1', en: 'Banner Title 1' },
     description: { ko: '배너 설명 1', en: 'Banner Description 1' },
     ctaText: { ko: '자세히 보기', en: 'Learn More' },
     ctaUrl: { ko: 'https://example.com/ko', en: 'https://example.com/en' },
@@ -15,7 +14,6 @@ const mockBanners: Banner[] = [
   {
     id: 'banner-2',
     imageUrl: { ko: '/banner2.png', en: '/banner2-en.png' },
-    title: { ko: '배너 제목 2', en: 'Banner Title 2' },
     description: { ko: '배너 설명 2', en: 'Banner Description 2' },
     ctaText: { ko: '둘러보기', en: 'Explore' },
     ctaUrl: { ko: 'https://example2.com/ko', en: 'https://example2.com/en' },
@@ -40,7 +38,7 @@ describe('BannerCarousel', () => {
 
   it('배너가 렌더링되어야 한다', () => {
     render(<BannerCarousel banners={mockBanners} />);
-    expect(screen.getByText('배너 제목 1')).toBeInTheDocument();
+    expect(screen.getByText('배너 설명 1')).toBeInTheDocument();
   });
 
   it('페이지 인디케이터가 표시되어야 한다', () => {
@@ -48,11 +46,15 @@ describe('BannerCarousel', () => {
     expect(screen.getByText('1/2')).toBeInTheDocument();
   });
 
-  it('인디케이터 클릭 시 슬라이드가 변경되어야 한다', () => {
+  it('스와이프로 인디케이터가 업데이트되어야 한다', () => {
     render(<BannerCarousel banners={mockBanners} />);
 
-    const indicators = screen.getAllByRole('button', { name: /Go to slide/i });
-    fireEvent.click(indicators[1]);
+    expect(screen.getByText('1/2')).toBeInTheDocument();
+
+    const carousel = document.querySelector('.overflow-hidden');
+    fireEvent.touchStart(carousel!, { touches: [{ clientX: 200 }] });
+    fireEvent.touchMove(carousel!, { touches: [{ clientX: 100 }] });
+    fireEvent.touchEnd(carousel!);
 
     expect(screen.getByText('2/2')).toBeInTheDocument();
   });
@@ -86,11 +88,14 @@ describe('BannerCarousel', () => {
   it('스와이프로 이전 슬라이드로 이동해야 한다', () => {
     render(<BannerCarousel banners={mockBanners} />);
 
-    const indicators = screen.getAllByRole('button', { name: /Go to slide/i });
-    fireEvent.click(indicators[1]);
+    // 먼저 다음 슬라이드로 이동
+    const carousel = document.querySelector('.overflow-hidden');
+    fireEvent.touchStart(carousel!, { touches: [{ clientX: 200 }] });
+    fireEvent.touchMove(carousel!, { touches: [{ clientX: 100 }] });
+    fireEvent.touchEnd(carousel!);
     expect(screen.getByText('2/2')).toBeInTheDocument();
 
-    const carousel = document.querySelector('.overflow-hidden');
+    // 이전 슬라이드로 이동
     fireEvent.touchStart(carousel!, { touches: [{ clientX: 100 }] });
     fireEvent.touchMove(carousel!, { touches: [{ clientX: 200 }] });
     fireEvent.touchEnd(carousel!);
@@ -112,10 +117,14 @@ describe('BannerCarousel', () => {
   it('마지막 슬라이드에서 오른쪽 스와이프는 무시되어야 한다', () => {
     render(<BannerCarousel banners={mockBanners} />);
 
-    const indicators = screen.getAllByRole('button', { name: /Go to slide/i });
-    fireEvent.click(indicators[1]);
-
+    // 먼저 마지막 슬라이드로 이동
     const carousel = document.querySelector('.overflow-hidden');
+    fireEvent.touchStart(carousel!, { touches: [{ clientX: 200 }] });
+    fireEvent.touchMove(carousel!, { touches: [{ clientX: 100 }] });
+    fireEvent.touchEnd(carousel!);
+    expect(screen.getByText('2/2')).toBeInTheDocument();
+
+    // 마지막 슬라이드에서 오른쪽 스와이프 시도
     fireEvent.touchStart(carousel!, { touches: [{ clientX: 200 }] });
     fireEvent.touchMove(carousel!, { touches: [{ clientX: 100 }] });
     fireEvent.touchEnd(carousel!);

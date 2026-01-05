@@ -3,49 +3,60 @@ import { IMAGE_CDN_BASE_URL } from '../constants';
 
 export const banners: Banner[] = [
   {
-    id: 'banner-1',
+    id: 'banner-mapo',
     imageUrl: {
-      ko: `${IMAGE_CDN_BASE_URL}/banner1.png`,
-      en: `${IMAGE_CDN_BASE_URL}/banner1.png`,
-    },
-    title: {
-      ko: 'D\'CENT 지갑으로 DeFi 시작하기',
-      en: 'Start DeFi with D\'CENT Wallet',
-    },
+      ko: `${IMAGE_CDN_BASE_URL}/banner_mapo_kr.png`,
+      en: `${IMAGE_CDN_BASE_URL}/banner_mapo_en.png`,
+    },  
     description: {
-      ko: '안전하고 편리한 DeFi 서비스를 경험하세요',
-      en: 'Experience safe and convenient DeFi services',
+      ko: '',
+      en: '',
     },
     ctaText: {
-      ko: '자세히 보기',
-      en: 'Learn More',
+      ko: '',
+      en: '',
     },
     ctaUrl: {
-      ko: 'https://dcentwallet.com/ko',
-      en: 'https://dcentwallet.com/en',
+      ko: 'https://store-kr.dcentwallet.com/blogs/post/tap-that-drop-with-map-protocol',
+      en: 'https://store.dcentwallet.com/blogs/post/tap-that-drop-with-map-protocol',
     },
   },
   {
-    id: 'banner-2',
+    id: 'banner-dcent',
     imageUrl: {
-      ko: `${IMAGE_CDN_BASE_URL}/banner2.png`,
-      en: `${IMAGE_CDN_BASE_URL}/banner2.png`,
-    },
-    title: {
-      ko: 'NFT 마켓플레이스',
-      en: 'NFT Marketplace',
+      ko: `${IMAGE_CDN_BASE_URL}/banner_dcent.png`,
+      en: `${IMAGE_CDN_BASE_URL}/banner_dcent.png`,
     },
     description: {
-      ko: '다양한 NFT를 거래하세요',
-      en: 'Trade various NFTs',
+      ko: '디센트 지문인증형 지갑으로\n한 층 더 강화된 보안을 경험하세요!',
+      en: 'Enhance your security with D\'CENT biometric wallet',
     },
     ctaText: {
-      ko: '둘러보기',
+      ko: '구매하기',
+      en: 'Buy Now',
+    },
+    ctaUrl: {
+      ko: 'https://store-kr.dcentwallet.com',
+      en: 'https://store.dcentwallet.com',
+    },
+  },
+  {
+    id: 'banner-blog',
+    imageUrl: {
+      ko: `${IMAGE_CDN_BASE_URL}/banner_blog.png`,
+      en: `${IMAGE_CDN_BASE_URL}/banner_blog.png`,
+    },
+    description: {
+      ko: '새로운 디센트 블로그를 방문하여\n최신 업데이트를 먼저 확인해보세요!',
+      en: 'Visit the new D\'CENT Blog to explore the latest updates first!',
+    },
+    ctaText: {
+      ko: '확인하기',
       en: 'Explore',
     },
     ctaUrl: {
-      ko: 'https://dcentwallet.com/ko/nft',
-      en: 'https://dcentwallet.com/en/nft',
+      ko: 'https://store-kr.dcentwallet.com/blogs/post',
+      en: 'https://store.dcentwallet.com/blogs/post',
     },
   },
 ];

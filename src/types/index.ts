@@ -10,7 +10,6 @@ export interface LocalizedText {
 export interface Banner {
   id: string;
   imageUrl: LocalizedText;
-  title: LocalizedText;
   description: LocalizedText;
   ctaText: LocalizedText;
   ctaUrl: LocalizedText;

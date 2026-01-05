@@ -32,6 +32,12 @@ const mockServices: Service[] = [
   },
 ];
 
+const mockPaginatedResponse: api.PaginatedResponse<Service> = {
+  data: mockServices,
+  nextPage: null,
+  totalCount: mockServices.length,
+};
+
 const createWrapper = () => {
   const queryClient = new QueryClient({
     defaultOptions: {
@@ -48,11 +54,11 @@ const createWrapper = () => {
 
 describe('ServiceList', () => {
   beforeEach(() => {
-    vi.mocked(api.getServices).mockResolvedValue(mockServices);
+    vi.mocked(api.getServicesPaginated).mockResolvedValue(mockPaginatedResponse);
   });
 
   it('로딩 중이면 스켈레톤이 표시되어야 한다', () => {
-    vi.mocked(api.getServices).mockImplementation(
+    vi.mocked(api.getServicesPaginated).mockImplementation(
       () => new Promise(() => {})
     );
 

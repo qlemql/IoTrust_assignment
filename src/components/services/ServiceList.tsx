@@ -1,7 +1,7 @@
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect, useCallback } from 'react';
 import { useVirtualizer } from '@tanstack/react-virtual';
 import { useConfigStore } from '../../stores/configStore';
-import { useServices } from '../../hooks/useServices';
+import { useInfiniteServices, flattenServices } from '../../hooks/useInfiniteServices';
 import { filterAndSearchServices } from '../../utils/filterServices';
 import { ServiceSearch } from './ServiceSearch';
 import { ServiceItem } from './ServiceItem';
@@ -26,6 +26,10 @@ const TEXTS = {
     ko: '서비스를 불러오는데 실패했습니다',
     en: 'Failed to load services',
   },
+  loadingMore: {
+    ko: '더 불러오는 중...',
+    en: 'Loading more...',
+  },
 };
 
 export const ServiceList = ({ onServiceSelect }: Props) => {
@@ -35,14 +39,49 @@ export const ServiceList = ({ onServiceSelect }: Props) => {
 
   const [searchQuery, setSearchQuery] = useState('');
   const parentRef = useRef<HTMLDivElement>(null);
+  const loadMoreRef = useRef<HTMLDivElement>(null);
 
-  const { data: services = [], isLoading, isError } = useServices();
+  const {
+    data,
+    isLoading,
+    isError,
+    fetchNextPage,
+    hasNextPage,
+    isFetchingNextPage,
+  } = useInfiniteServices();
+
+  const allServices = flattenServices(data?.pages);
 
   const filteredServices = filterAndSearchServices(
-    services,
+    allServices,
     { language, platform, environment },
     searchQuery
   );
+
+  const handleObserver = useCallback(
+    (entries: IntersectionObserverEntry[]) => {
+      const [entry] = entries;
+      if (entry.isIntersecting && hasNextPage && !isFetchingNextPage) {
+        fetchNextPage();
+      }
+    },
+    [fetchNextPage, hasNextPage, isFetchingNextPage]
+  );
+
+  useEffect(() => {
+    const element = loadMoreRef.current;
+    if (!element) return;
+
+    const observer = new IntersectionObserver(handleObserver, {
+      root: parentRef.current,
+      rootMargin: '100px',
+      threshold: 0,
+    });
+
+    observer.observe(element);
+
+    return () => observer.disconnect();
+  }, [handleObserver]);
 
   const virtualizer = useVirtualizer({
     count: filteredServices.length,
@@ -98,6 +137,16 @@ export const ServiceList = ({ onServiceSelect }: Props) => {
               );
             })}
           </div>
+
+          <div ref={loadMoreRef} className="h-1" />
+
+          {isFetchingNextPage && (
+            <div className="py-4 text-center">
+              <p className="text-sm text-gray-500">
+                {TEXTS.loadingMore[language]}
+              </p>
+            </div>
+          )}
         </div>
       )}
     </section>

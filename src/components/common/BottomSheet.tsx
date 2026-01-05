@@ -6,7 +6,7 @@ interface Props {
   children: React.ReactNode;
 }
 
-export const BottomSheet: React.FC<Props> = ({ isOpen, onClose, children }) => {
+export const BottomSheet = ({ isOpen, onClose, children }: Props) => {
   useEffect(() => {
     if (!isOpen) return;
 

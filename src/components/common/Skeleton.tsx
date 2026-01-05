@@ -5,12 +5,12 @@ interface Props {
   rounded?: 'none' | 'sm' | 'md' | 'lg' | 'full';
 }
 
-export const Skeleton: React.FC<Props> = ({
+export const Skeleton = ({
   width = '100%',
   height = 16,
   className = '',
   rounded = 'md',
-}) => {
+}: Props) => {
   const roundedClass = {
     none: 'rounded-none',
     sm: 'rounded-sm',

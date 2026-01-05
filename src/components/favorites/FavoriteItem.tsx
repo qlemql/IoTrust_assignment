@@ -20,6 +20,15 @@ export const FavoriteItem = ({ favorite, onDelete }: Props) => {
     <div
       className="flex items-center gap-3 px-3 py-4 bg-white cursor-pointer active:bg-gray-50 transition-colors"
       onClick={handleClick}
+      role="button"
+      tabIndex={0}
+      onKeyDown={(e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          handleClick();
+        }
+      }}
+      aria-label={`${favorite.name} 바로가기`}
     >
       <OptimizedImage
         src={favorite.iconUrl}

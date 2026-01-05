@@ -78,6 +78,7 @@ export const ServiceDetailSheet = ({ service, onClose }: Props) => {
               type="button"
               onClick={handleGoClick}
               className="w-2/3 h-12 flex items-center justify-center gap-2 rounded-xl border border-gray-200 text-sm font-medium text-gray-700 active:bg-gray-50 transition-colors"
+              aria-label={`${service.name[language]} 서비스로 이동`}
             >
               {TEXTS.go[language]}
               <svg

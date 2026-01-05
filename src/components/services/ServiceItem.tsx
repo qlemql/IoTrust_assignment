@@ -23,9 +23,11 @@ export const ServiceItem = ({ service, onSelect }: Props) => {
         tabIndex={0}
         onKeyDown={(e) => {
           if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
             handleClick();
           }
         }}
+        aria-label={`${service.name[language]} 상세 보기`}
       >
         <OptimizedImage
           src={service.iconUrl}

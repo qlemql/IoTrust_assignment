@@ -7,11 +7,19 @@ import { BannerSkeleton } from './BannerSkeleton';
 interface Props {
   banners: Banner[];
   isLoading?: boolean;
+  isError?: boolean;
 }
 
 const SWIPE_THRESHOLD = 50;
 
-export const BannerCarousel = ({ banners, isLoading = false }: Props) => {
+const TEXTS = {
+  error: {
+    ko: '배너를 불러오는데 실패했습니다',
+    en: 'Failed to load banners',
+  },
+};
+
+export const BannerCarousel = ({ banners, isLoading = false, isError = false }: Props) => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const touchStartX = useRef(0);
   const touchEndX = useRef(0);
@@ -48,6 +56,16 @@ export const BannerCarousel = ({ banners, isLoading = false }: Props) => {
     return (
       <div className="px-4">
         <BannerSkeleton />
+      </div>
+    );
+  }
+
+  if (isError) {
+    return (
+      <div className="px-4">
+        <div className="aspect-[19/8] bg-gray-100 rounded-lg flex items-center justify-center">
+          <p className="text-sm text-gray-500">{TEXTS.error[language]}</p>
+        </div>
       </div>
     );
   }

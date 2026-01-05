@@ -15,30 +15,36 @@ export const ServiceItem = ({ service, onSelect }: Props) => {
   };
 
   return (
-    <div
-      className="flex items-center gap-3 p-3 bg-white cursor-pointer active:bg-gray-50 transition-colors"
-      onClick={handleClick}
-      role="button"
-      tabIndex={0}
-      onKeyDown={(e) => {
-        if (e.key === 'Enter' || e.key === ' ') {
-          handleClick();
-        }
-      }}
-    >
-      <OptimizedImage
-        src={service.iconUrl}
-        alt={service.name[language]}
-        size="md"
-        className="rounded-lg flex-shrink-0"
-      />
-      <div className="flex-1 min-w-0">
-        <p className="text-sm font-medium text-gray-900 truncate">
-          {service.name[language]}
-        </p>
-        <p className="text-xs text-gray-500 truncate">
-          {service.description[language]}
-        </p>
+    <div className="bg-white">
+      <div
+        className="flex items-center gap-3 px-3 py-3 cursor-pointer active:bg-gray-50 transition-colors overflow-hidden"
+        onClick={handleClick}
+        role="button"
+        tabIndex={0}
+        onKeyDown={(e) => {
+          if (e.key === 'Enter' || e.key === ' ') {
+            handleClick();
+          }
+        }}
+      >
+        <OptimizedImage
+          src={service.iconUrl}
+          alt={service.name[language]}
+          width={48}
+          height={48}
+          className="rounded-lg flex-shrink-0"
+        />
+        <div className="flex-1 min-w-0 overflow-hidden">
+          <p className="text-sm font-medium text-gray-900 truncate">
+            {service.name[language]}
+          </p>
+          <p className="text-xs text-gray-500 truncate">
+            {service.description[language]}
+          </p>
+        </div>
+      </div>
+      <div className="py-2 px-3">
+        <div className="border-b border-gray-200" />
       </div>
     </div>
   );

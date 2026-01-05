@@ -6,7 +6,7 @@ export const DEFAULT_ENVIRONMENT: Environment = import.meta.env.VITE_ENV ?? 'dev
 
 export const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
-export const SERVICE_ITEM_HEIGHT = 72;
+export const SERVICE_ITEM_HEIGHT = 90;
 export const PAGE_SIZE = 20;
 export const SWIPE_THRESHOLD = 50;
 

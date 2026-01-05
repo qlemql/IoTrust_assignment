@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { shouldShowService, filterServices } from './filterServices';
+import { shouldShowService, filterServices, searchServices, filterAndSearchServices } from './filterServices';
 import type { Service } from '../types';
 
 const createMockService = (overrides: Partial<Service> = {}): Service => ({
@@ -122,5 +122,98 @@ describe('filterServices', () => {
     const result = filterServices(services, config);
 
     expect(result).toHaveLength(3);
+  });
+});
+
+describe('searchServices', () => {
+  it('검색어가 비어있으면 전체를 반환해야 한다', () => {
+    const services: Service[] = [
+      createMockService({ id: 'service-1', name: { ko: '서비스1', en: 'Service1' } }),
+      createMockService({ id: 'service-2', name: { ko: '서비스2', en: 'Service2' } }),
+    ];
+
+    const result = searchServices(services, '', 'ko');
+
+    expect(result).toHaveLength(2);
+  });
+
+  it('이름으로 검색할 수 있어야 한다', () => {
+    const services: Service[] = [
+      createMockService({ id: 'service-1', name: { ko: '암호화폐 구매', en: 'Buy Crypto' } }),
+      createMockService({ id: 'service-2', name: { ko: '메타마스크', en: 'MetaMask' } }),
+    ];
+
+    const result = searchServices(services, '암호화폐', 'ko');
+
+    expect(result).toHaveLength(1);
+    expect(result[0].id).toBe('service-1');
+  });
+
+  it('설명으로 검색할 수 있어야 한다', () => {
+    const services: Service[] = [
+      createMockService({
+        id: 'service-1',
+        name: { ko: '서비스1', en: 'Service1' },
+        description: { ko: '블록체인 서비스', en: 'Blockchain service' }
+      }),
+      createMockService({
+        id: 'service-2',
+        name: { ko: '서비스2', en: 'Service2' },
+        description: { ko: '일반 서비스', en: 'General service' }
+      }),
+    ];
+
+    const result = searchServices(services, '블록체인', 'ko');
+
+    expect(result).toHaveLength(1);
+    expect(result[0].id).toBe('service-1');
+  });
+
+  it('대소문자를 구분하지 않아야 한다', () => {
+    const services: Service[] = [
+      createMockService({ id: 'service-1', name: { ko: 'FTSO Portal', en: 'FTSO Portal' } }),
+    ];
+
+    const result = searchServices(services, 'ftso', 'ko');
+
+    expect(result).toHaveLength(1);
+  });
+
+  it('검색 결과가 없으면 빈 배열을 반환해야 한다', () => {
+    const services: Service[] = [
+      createMockService({ id: 'service-1', name: { ko: '서비스1', en: 'Service1' } }),
+    ];
+
+    const result = searchServices(services, '존재하지않는검색어', 'ko');
+
+    expect(result).toHaveLength(0);
+  });
+});
+
+describe('filterAndSearchServices', () => {
+  it('필터링과 검색을 함께 적용해야 한다', () => {
+    const services: Service[] = [
+      createMockService({
+        id: 'service-1',
+        name: { ko: '암호화폐', en: 'Crypto' },
+        supportedLanguages: ['ko']
+      }),
+      createMockService({
+        id: 'service-2',
+        name: { ko: '암호화폐2', en: 'Crypto2' },
+        supportedLanguages: ['en']
+      }),
+      createMockService({
+        id: 'service-3',
+        name: { ko: '다른서비스', en: 'Other' },
+        supportedLanguages: ['ko']
+      }),
+    ];
+    const config = { language: 'ko' as const, platform: 'android' as const, environment: 'dev' as const };
+
+    const result = filterAndSearchServices(services, config, '암호화폐');
+
+    expect(result).toHaveLength(1);
+    expect(result[0].id).toBe('service-1');
   });
 });

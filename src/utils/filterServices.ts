@@ -29,8 +29,7 @@ export const searchServices = (
 
   return services.filter((service) => {
     const name = service.name[language].toLowerCase();
-    const description = service.description[language].toLowerCase();
-    return name.includes(query) || description.includes(query);
+    return name.includes(query);
   });
 };
 

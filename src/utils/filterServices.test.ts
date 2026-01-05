@@ -149,7 +149,7 @@ describe('searchServices', () => {
     expect(result[0].id).toBe('service-1');
   });
 
-  it('설명으로 검색할 수 있어야 한다', () => {
+  it('설명으로는 검색되지 않아야 한다 (이름만 검색)', () => {
     const services: Service[] = [
       createMockService({
         id: 'service-1',
@@ -165,8 +165,7 @@ describe('searchServices', () => {
 
     const result = searchServices(services, '블록체인', 'ko');
 
-    expect(result).toHaveLength(1);
-    expect(result[0].id).toBe('service-1');
+    expect(result).toHaveLength(0);
   });
 
   it('대소문자를 구분하지 않아야 한다', () => {

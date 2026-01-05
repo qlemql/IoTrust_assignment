@@ -50,7 +50,7 @@ export const FavoritesList = ({ isLoading = false }: Props) => {
 
   return (
     <section className="px-4">
-      <h2 className="text-base font-semibold text-gray-900 mb-3">
+      <h2 className="text-base font-semibold text-gray-900 pb-3 border-b border-gray-200">
         {TEXTS.title[language]}
       </h2>
 
@@ -61,13 +61,19 @@ export const FavoritesList = ({ isLoading = false }: Props) => {
           <p className="text-sm text-gray-500">{TEXTS.empty[language]}</p>
         </div>
       ) : (
-        <div className="space-y-2">
-          {favorites.map((favorite) => (
-            <FavoriteItem
-              key={favorite.id}
-              favorite={favorite}
-              onDelete={handleDeleteRequest}
-            />
+        <div>
+          {favorites.map((favorite, index) => (
+            <div key={favorite.id}>
+              <FavoriteItem
+                favorite={favorite}
+                onDelete={handleDeleteRequest}
+              />
+              {index < favorites.length - 1 && (
+                <div className="py-2">
+                  <div className="border-b border-gray-200" />
+                </div>
+              )}
+            </div>
           ))}
         </div>
       )}

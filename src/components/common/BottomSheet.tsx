@@ -1,4 +1,5 @@
-import { useEffect } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
+import { createPortal } from 'react-dom';
 
 interface Props {
   isOpen: boolean;
@@ -6,46 +7,132 @@ interface Props {
   children: React.ReactNode;
 }
 
-export const BottomSheet = ({ isOpen, onClose, children }: Props) => {
-  useEffect(() => {
-    if (!isOpen) return;
+const ANIMATION_DURATION = 300;
 
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') {
-        onClose();
+export const BottomSheet = ({ isOpen, onClose, children }: Props) => {
+  const [isClosing, setIsClosing] = useState(false);
+  const closeTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  const shouldRender = isOpen || isClosing;
+
+  useEffect(() => {
+    if (isOpen && isClosing) {
+      setIsClosing(false);
+    }
+  }, [isOpen, isClosing]);
+
+  useEffect(() => {
+    return () => {
+      if (closeTimeoutRef.current) {
+        clearTimeout(closeTimeoutRef.current);
+      }
+    };
+  }, []);
+
+  const handleClose = useCallback(() => {
+    if (isClosing) return;
+    setIsClosing(true);
+    closeTimeoutRef.current = setTimeout(() => {
+      setIsClosing(false);
+      onClose();
+    }, ANIMATION_DURATION);
+  }, [isClosing, onClose]);
+
+  useEffect(() => {
+    if (shouldRender) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
+    }
+
+    return () => {
+      document.body.style.overflow = '';
+    };
+  }, [shouldRender]);
+
+  useEffect(() => {
+    const handleEscape = (e: KeyboardEvent) => {
+      if (e.key === 'Escape' && !isClosing) {
+        handleClose();
       }
     };
 
-    document.addEventListener('keydown', handleKeyDown);
-    document.body.style.overflow = 'hidden';
+    if (shouldRender) {
+      document.addEventListener('keydown', handleEscape);
+    }
 
     return () => {
-      document.removeEventListener('keydown', handleKeyDown);
-      document.body.style.overflow = 'unset';
+      document.removeEventListener('keydown', handleEscape);
     };
-  }, [isOpen, onClose]);
+  }, [shouldRender, isClosing, handleClose]);
 
-  if (!isOpen) return null;
+  if (!shouldRender) return null;
 
-  const handleBackdropClick = (e: React.MouseEvent<HTMLDivElement>) => {
-    if (e.target === e.currentTarget) {
-      onClose();
-    }
-  };
-
-  return (
+  return createPortal(
     <div
-      className="fixed inset-0 z-50 flex items-end bg-black/50 animate-fade-in"
-      onClick={handleBackdropClick}
       role="dialog"
       aria-modal="true"
+      style={{
+        position: 'fixed',
+        top: 0,
+        left: 0,
+        right: 0,
+        bottom: 0,
+        zIndex: 9999,
+      }}
     >
-      <div className="bg-white rounded-t-2xl w-full max-h-[90vh] overflow-y-auto animate-slide-up">
-        <div className="flex justify-center pt-3 pb-2">
-          <div className="w-10 h-1 bg-gray-300 rounded-full" />
+      {/* Overlay */}
+      <div
+        onClick={isClosing ? undefined : handleClose}
+        aria-hidden="true"
+        style={{
+          position: 'fixed',
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+          backgroundColor: 'rgba(0, 0, 0, 0.5)',
+          opacity: isClosing ? 0 : 1,
+          transition: 'opacity 300ms',
+        }}
+      />
+      {/* Sheet */}
+      <div
+        style={{
+          position: 'fixed',
+          bottom: 0,
+          left: 0,
+          right: 0,
+          backgroundColor: 'white',
+          borderTopLeftRadius: '16px',
+          borderTopRightRadius: '16px',
+          minHeight: '60vh',
+          maxHeight: '90vh',
+          transform: isClosing ? 'translateY(100%)' : 'translateY(0)',
+          transition: 'transform 300ms',
+        }}
+      >
+        <div style={{ overflowY: 'auto', maxHeight: '90vh' }}>
+          {/* Handle */}
+          <div
+            style={{
+              position: 'sticky',
+              top: 0,
+              backgroundColor: 'white',
+              paddingTop: '12px',
+              paddingBottom: '8px',
+              display: 'flex',
+              justifyContent: 'center',
+              borderTopLeftRadius: '16px',
+              borderTopRightRadius: '16px',
+            }}
+          >
+            <div className="w-10 h-1 bg-gray-300 rounded-full" />
+          </div>
+          {children}
         </div>
-        {children}
       </div>
-    </div>
+    </div>,
+    document.body
   );
 };

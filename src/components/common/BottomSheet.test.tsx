@@ -1,5 +1,5 @@
-import { describe, it, expect, vi } from 'vitest';
-import { render, screen, fireEvent } from '@testing-library/react';
+import { describe, it, expect, vi, beforeEach } from 'vitest';
+import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import { BottomSheet } from './BottomSheet';
 
 describe('BottomSheet', () => {
@@ -29,17 +29,19 @@ describe('BottomSheet', () => {
     expect(screen.getByText('Sheet Content')).toBeInTheDocument();
   });
 
-  it('배경 클릭 시 onClose가 호출되어야 한다', () => {
+  it('배경 클릭 시 onClose가 호출되어야 한다', async () => {
     render(
       <BottomSheet isOpen={true} onClose={mockOnClose}>
         <div>Sheet Content</div>
       </BottomSheet>
     );
 
-    const backdrop = screen.getByRole('dialog');
-    fireEvent.click(backdrop);
+    const overlay = document.querySelector('[aria-hidden="true"]');
+    fireEvent.click(overlay!);
 
-    expect(mockOnClose).toHaveBeenCalledTimes(1);
+    await waitFor(() => {
+      expect(mockOnClose).toHaveBeenCalledTimes(1);
+    }, { timeout: 500 });
   });
 
   it('시트 콘텐츠 클릭 시 onClose가 호출되지 않아야 한다', () => {
@@ -54,7 +56,7 @@ describe('BottomSheet', () => {
     expect(mockOnClose).not.toHaveBeenCalled();
   });
 
-  it('Escape 키 입력 시 onClose가 호출되어야 한다', () => {
+  it('Escape 키 입력 시 onClose가 호출되어야 한다', async () => {
     render(
       <BottomSheet isOpen={true} onClose={mockOnClose}>
         <div>Sheet Content</div>
@@ -63,7 +65,9 @@ describe('BottomSheet', () => {
 
     fireEvent.keyDown(document, { key: 'Escape' });
 
-    expect(mockOnClose).toHaveBeenCalledTimes(1);
+    await waitFor(() => {
+      expect(mockOnClose).toHaveBeenCalledTimes(1);
+    }, { timeout: 500 });
   });
 
   it('aria-modal 속성이 true여야 한다', () => {
@@ -83,7 +87,7 @@ describe('BottomSheet', () => {
       </BottomSheet>
     );
 
-    const handle = document.querySelector('.w-10.h-1.bg-gray-300');
+    const handle = document.querySelector('.w-10.h-1.bg-gray-300.rounded-full');
     expect(handle).toBeInTheDocument();
   });
 });

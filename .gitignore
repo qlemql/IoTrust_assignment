@@ -41,3 +41,4 @@ coverage
 # Private files (not for GitHub)
 CLAUDE.md
 개발 가이드.md
+.claude/
